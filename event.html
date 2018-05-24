@@ -1,0 +1,77 @@
+<html>
+<head>evnetbus原型实现</head>
+<body>
+	看control
+</body>
+<script>
+	(function () {
+
+		function EventBus() {
+			this.events = {};
+		}
+		/*
+		 *  触发事件
+		 *  @param event {string} 事件名称
+		 *  @param args {string} 参数
+		 *  @param content {Object} 上下文对象
+		 */
+		EventBus.prototype.trigger = function (event, args, content) {
+			let handle = this.events[event];
+			if (handle && handle.length > 0) {
+				for (let i = 0, len = handle.length; i < len; i++) {
+					handle[i].call(content || null, args)
+				}
+			}
+		};
+
+		/*
+		 *  定阅事件
+		 *  @param event {string} 事件名称
+		 *  @param callback {string} 处理函数
+		 *  @param content {Object} 上下文对象
+		 */
+		EventBus.prototype.on = function (event, callback, content) {
+			if (typeof event !== "string") throw "缺少订阅事件名";
+			if (typeof callback !== "function") throw "缺少处理函数";
+			let handle = callback.bind(content);
+			if (this.events[event]) {
+				this.events[event].push(handle);
+			} else {
+				let handlerArr = [];
+				handlerArr.push(handle);
+				this.events[event] = handlerArr;
+			}
+		};
+		/*
+		 *  注销订阅事件
+		 *  @param event {string} 事件名称
+		 */
+		EventBus.prototype.off = function (event, callback) {
+			var handlerArr = this.events[event];
+			if (!callback) {
+				delete this.events[event];
+			} else if (handlerArr && handlerArr.length > 0) {
+				for (var i = 0; i < handlerArr.length; i++) {
+					if (handlerArr[i] === callback) {
+						delete handlerArr[i];
+					}
+				}
+			}
+		};
+		//test
+		let bus = new EventBus();
+
+		bus.on("haha", function (res) {
+			console.log(res)
+		}, window);
+		bus.on("haha", function (res) {
+			console.log(res)
+		}, window);
+		bus.trigger("haha", "hello lihaili")
+		bus.off("haha")
+		bus.trigger("haha", "hello lihaili")
+
+	})()
+</script>
+
+</html>
