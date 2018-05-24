@@ -17,7 +17,7 @@
 		 */
 		EventBus.prototype.trigger = function (event, args, content) {
 			let handle = this.events[event];
-			if (handle && handle.length > 0) {
+			if (Array.isArray(handle)) {
 				for (let i = 0, len = handle.length; i < len; i++) {
 					handle[i].call(content || null, args)
 				}
@@ -34,7 +34,7 @@
 			if (typeof event !== "string") throw "缺少订阅事件名";
 			if (typeof callback !== "function") throw "缺少处理函数";
 			let handle = callback.bind(content);
-			if (this.events[event]) {
+			if (Array.isArray(handle)) {
 				this.events[event].push(handle);
 			} else {
 				let handlerArr = [];
@@ -50,7 +50,7 @@
 			var handlerArr = this.events[event];
 			if (!callback) {
 				delete this.events[event];
-			} else if (handlerArr && handlerArr.length > 0) {
+			} else if (Array.isArray(handlerArr)) {
 				for (var i = 0; i < handlerArr.length; i++) {
 					if (handlerArr[i] === callback) {
 						delete handlerArr[i];
