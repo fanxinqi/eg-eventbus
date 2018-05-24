@@ -1,5 +1,5 @@
-js eventbus 简单实现
-1，bind call apply的区别  
+# js eventbus 简单实现 (延伸的知识)
+## bind call apply的区别  
  call和apply通过名字就是直接主动的宝宝，直接执行函数
  区别在于一个apply(context,[args]) 是一个数组
  call(context,arge0,arge1) 单个参数
@@ -18,8 +18,8 @@ js eventbus 简单实现
 
  结果： {id: 1} 而不是 window对象
 
- 2 
- 判断数组方法 
+ 
+ ## 判断数组方法 
  es5
 Array.isArray([])
 
