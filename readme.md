@@ -9,26 +9,28 @@
  并且最大特点绑定完上下文，就无法再次绑定
 
  eg:
-  function test(){console.log(this)};
+```
+ function test(){console.log(this)};
 
  let context1={id:1};
  let context2={id:2};
  var newTest=test.bind(context1).bind(context2);
  newTest.call(window);
+```
 
  结果： {id: 1} 而不是 window对象
 
  
  ## 判断数组方法 
  es5
-Array.isArray([])
+```Array.isArray([])```
 
 最佳兼容方法
-function isArray(value) {
+```function isArray(value) {
     if (typeof Array.isArray === "function") {
       return Array.isArray(value);
     } else {
       return Object.prototype.toString.call(value) === "[object Array]";
     }
-}
+}```
  
