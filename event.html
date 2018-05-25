@@ -1,10 +1,27 @@
 <html>
-<head>evnetbus原型实现</head>
+
+<head>
+	<title>evnetbus原型实现</title>
+</head>
+
 <body>
 	看control
 </body>
 <script>
 	(function () {
+
+		var eventApiOn = function (event, callback, context, opt) {
+			if (typeof event !== "string") throw "缺少订阅事件名";
+			if (typeof callback !== "function") throw "缺少处理函数";
+			var handle = callback.bind(context);
+			if (!Array.isArray(this.events[event])) {
+				this.events[event] = [];
+			}
+			this.events[event].push({
+				opt: opt,
+				handle: handle
+			});
+		}
 
 		function EventBus() {
 			this.events = {};
@@ -13,13 +30,17 @@
 		 *  触发事件
 		 *  @param event {string} 事件名称
 		 *  @param args {string} 参数
-		 *  @param content {Object} 上下文对象
+		 *  @param context {Object} 上下文对象
 		 */
-		EventBus.prototype.trigger = function (event, args, content) {
-			let handle = this.events[event];
-			if (Array.isArray(handle)) {
-				for (let i = 0, len = handle.length; i < len; i++) {
-					handle[i].call(content || null, args)
+		EventBus.prototype.trigger = function (event, args) {
+			var eventTarget = this.events[event];
+			if (Array.isArray(eventTarget)) {
+				for (var i = 0, len = eventTarget.length; i < len; i++) {
+					eventTarget[i].handle.call(this, args)
+					var opt = eventTarget[i].opt;
+					if (opt && opt.once) {
+						eventTarget.splice(i, 1);
+					}
 				}
 			}
 		};
@@ -28,48 +49,59 @@
 		 *  定阅事件
 		 *  @param event {string} 事件名称
 		 *  @param callback {string} 处理函数
-		 *  @param content {Object} 上下文对象
+		 *  @param context {Object} 上下文对象
 		 */
-		EventBus.prototype.on = function (event, callback, content) {
-			if (typeof event !== "string") throw "缺少订阅事件名";
-			if (typeof callback !== "function") throw "缺少处理函数";
-			let handle = callback.bind(content);
-			if (Array.isArray(handle)) {
-				this.events[event].push(handle);
-			} else {
-				let handlerArr = [];
-				handlerArr.push(handle);
-				this.events[event] = handlerArr;
-			}
+		EventBus.prototype.on = function (event, callback, context) {
+			eventApiOn.apply(this, arguments)
 		};
 		/*
 		 *  注销订阅事件
 		 *  @param event {string} 事件名称
 		 */
 		EventBus.prototype.off = function (event, callback) {
-			var handlerArr = this.events[event];
+			var eventTarget = this.events[event];
 			if (!callback) {
 				delete this.events[event];
-			} else if (Array.isArray(handlerArr)) {
-				for (var i = 0; i < handlerArr.length; i++) {
-					if (handlerArr[i] === callback) {
-						delete handlerArr[i];
+			} else if (Array.isArray(eventTarget)) {
+				for (var i = 0; i < eventTarget.length; i++) {
+					if (eventTarget[i] && eventTarget[i].handle === callback) {
+						eventTarget.splice(i, 1);
 					}
 				}
 			}
 		};
-		//test
-		let bus = new EventBus();
 
-		bus.on("haha", function (res) {
+		/*
+		 * 订阅一次
+		 *  @param event {string} 事件名称
+		 */
+		EventBus.prototype.once = function (event, callback) {
+			var arg = [].slice.apply(arguments);
+			arg.push({
+				once: true
+			})
+			eventApiOn.apply(this, arg)
+		};
+		var bus = new EventBus();
+		//test 多次 on
+
+
+		// bus.on("haha", function (res) {
+		// 	console.log(res)
+		// }, window);
+		// bus.on("haha", function (res) {
+		// 	console.log(res)
+		// }, window);
+		// bus.trigger("haha", "hello lihaili")
+		// bus.off("haha")
+		// bus.trigger("haha", "hello lihaili")
+
+		//test once
+		bus.once("test", function (res) {
 			console.log(res)
 		}, window);
-		bus.on("haha", function (res) {
-			console.log(res)
-		}, window);
-		bus.trigger("haha", "hello lihaili")
-		bus.off("haha")
-		bus.trigger("haha", "hello lihaili")
+		bus.trigger("test", "hello test")
+		bus.trigger("test", "hello test")
 
 	})()
 </script>

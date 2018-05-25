@@ -22,15 +22,18 @@
 
  
  ## 判断数组方法 
- es5
+
 ```Array.isArray([])```
 
 最佳兼容方法
-```function isArray(value) {
-    if (typeof Array.isArray === "function") {
-      return Array.isArray(value);
-    } else {
-      return Object.prototype.toString.call(value) === "[object Array]";
+
+```
+    function isArray(value) {
+        if (typeof Array.isArray === "function") {
+        return Array.isArray(value);
+        } else {
+        return Object.prototype.toString.call(value) === "[object Array]";
+        }
     }
-}```
+```
  
