@@ -1,109 +1,78 @@
 <html>
 
 <head>
-	<title>evnetbus原型实现</title>
+	<title>算法</title>
 </head>
 
 <body>
 	看control
 </body>
 <script>
-	(function () {
-
-		var eventApiOn = function (event, callback, context, opt) {
-			if (typeof event !== "string") throw "缺少订阅事件名";
-			if (typeof callback !== "function") throw "缺少处理函数";
-			var handle = callback.bind(context);
-			if (!Array.isArray(this.events[event])) {
-				this.events[event] = [];
+	//数组去重复
+	//思路是用hash 存储，进行重复判断 时间复杂度o(n)
+	!(function () {
+		var arr = [1, 2, 3, 4, 1, 5, 6, 7, 9];
+		var result = [],
+			hashMap = {};
+		for (var i = 0, e;
+			(e = arr[i]) != null; i++) {
+			if (!hashMap[e]) {
+				result.push(e);
+				hashMap[e] = true;
 			}
-			this.events[event].push({
-				opt: opt,
-				handle: handle
-			});
 		}
+		console.log(result)
+	})();
 
-		function EventBus() {
-			this.events = {};
+
+	//斐波那契数列 生成 fn(n)=fn(n-1)+fn(n-2) n>2,fn(1)=1,f(2)=2
+	!(function () {
+
+		var x = 1;
+		//递归实现：时间复杂度：o(2的n次方) ，由于有重复计算 二叉树
+		function fb1(n) {
+			console.log(x)
+			x++;
+			if (n <= 2) {
+				return 1;
+			}
+			return fb1(n - 1) + fb1(n - 2);
 		}
-		/*
-		 *  触发事件
-		 *  @param event {string} 事件名称
-		 *  @param args {string} 参数
-		 *  @param context {Object} 上下文对象
-		 */
-		EventBus.prototype.trigger = function (event, args) {
-			var eventTarget = this.events[event];
-			if (Array.isArray(eventTarget)) {
-				for (var i = 0, len = eventTarget.length; i < len; i++) {
-					eventTarget[i].handle.call(this, args)
-					var opt = eventTarget[i].opt;
-					if (opt && opt.once) {
-						eventTarget.splice(i, 1);
-					}
-				}
+		//尾递归优化：时间复杂度 o(n)
+		function fb2(n, res1 = 1, res2 = 1) {
+			console.log(x)
+			x++;
+			if (n <= 2) {
+				return res2;
 			}
-		};
+			return fb2(n - 1, res2, res2 + res1);
+		}
+		console.time();
+		console.log(fb2(10));
+		console.timeEnd();
+		//动态规划：
+		function dynFib(n) {
+            let val = [];
+            for(let i = 0; i <= n; ++i){
+                val[i]=0;
+            }
+            if(n ===1 || n  === 2){
+                return 1;
+            }
+            else {
+                val[1] =1;
+                val[2] = 2;
+                for(let i = 3; i <= n; ++i){
+                    val[i] = val[i-1] +val[i-2] ;
+                }
+            }
+            return val[n-1]
+        }
+		console.time();
+		console.log(dynFib(10));
+		console.timeEnd();
 
-		/*
-		 *  定阅事件
-		 *  @param event {string} 事件名称
-		 *  @param callback {string} 处理函数
-		 *  @param context {Object} 上下文对象
-		 */
-		EventBus.prototype.on = function (event, callback, context) {
-			eventApiOn.apply(this, arguments)
-		};
-		/*
-		 *  注销订阅事件
-		 *  @param event {string} 事件名称
-		 */
-		EventBus.prototype.off = function (event, callback) {
-			var eventTarget = this.events[event];
-			if (!callback) {
-				delete this.events[event];
-			} else if (Array.isArray(eventTarget)) {
-				for (var i = 0; i < eventTarget.length; i++) {
-					if (eventTarget[i] && eventTarget[i].handle === callback) {
-						eventTarget.splice(i, 1);
-					}
-				}
-			}
-		};
-
-		/*
-		 * 订阅一次
-		 *  @param event {string} 事件名称
-		 */
-		EventBus.prototype.once = function (event, callback) {
-			var arg = [].slice.apply(arguments);
-			arg.push({
-				once: true
-			})
-			eventApiOn.apply(this, arg)
-		};
-		var bus = new EventBus();
-		//test 多次 on
-
-
-		// bus.on("haha", function (res) {
-		// 	console.log(res)
-		// }, window);
-		// bus.on("haha", function (res) {
-		// 	console.log(res)
-		// }, window);
-		// bus.trigger("haha", "hello lihaili")
-		// bus.off("haha")
-		// bus.trigger("haha", "hello lihaili")
-
-		//test once
-		bus.once("test", function (res) {
-			console.log(res)
-		}, window);
-		bus.trigger("test", "hello test")
-		bus.trigger("test", "hello test")
-
-	})()
+	})();
 </script>
 
 </html>
