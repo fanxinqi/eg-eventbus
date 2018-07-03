@@ -1,0 +1,64 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title></title>
+    <style>
+        #box {
+            position: relative;
+        }
+
+        .animation-demo {
+            background: #333;
+            width: 50px;
+            height: 50px;
+            /*  border-radius:50%; */
+            position: absolute;
+            animation: move;
+            animation-iteration-count: infinite;
+            animation-timing-function: linear;
+            animation-duration: 2s;
+
+        }
+
+        @keyframes move {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <span class="animation-demo"></span>
+    </div>
+    <script>
+        function parseInteger(str) {
+            let r = 0;
+            //若null,undfined,null,Array,Object,0 
+            if (!str || Array.isArray(str) || Object.prototype.toString.call(str)) {
+                r = 0;
+            }
+            // 若是
+            if (typeof str === "number") {
+                if (/^[1-9]\d*$/.test(str)) {
+                    r = str;
+                } else {
+                    r = 0;
+                }
+            }
+            if (typeof str === "string") {
+                var reg = /^[1-9]\d*/;
+                mat = str.match(reg)
+                r = mat === null ? 0 : mat[0];
+            }
+            return typeof r === "string" ? parseInt(r) : r;
+        }
+    </script>
+</body>
+
+</html>
