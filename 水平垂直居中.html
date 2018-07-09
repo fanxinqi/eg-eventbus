@@ -24,7 +24,9 @@
             height: 500px;
         }
 
-        .case1-1 span {}
+        .case1-1 span {
+
+        }
 
         .case2-0 {
             background: aquamarine;
@@ -34,19 +36,29 @@
             width: 500px;
             height: 200px;
         }
-        .case2-1{
+
+        .case2-1 {
+            background: blue;
             position: relative;
-            background:blue; 
             height: 500px;
             width: 500px;
         }
-        .case2-1 div{
+
+        .case2-1 div {
             position: absolute;
-            left:50%;
+            left: 50%;
             top: 50%;
-            height: 30px;
-            width: 30px;
-            transform:translate(-50%,-50%);
+            transform: translate(-50%, -50%);
+        }
+
+        .case2-2 {
+            background: burlywood;
+            height: 500px;
+            width: 500px;
+            position: relative;
+            display: -webkit-box;
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
         }
     </style>
 </head>
@@ -62,8 +74,11 @@
         <div>case2-0</div>
     </div>
     <div class="case2-1">
-            <div>case2-1</div>
-        </div>
+        <div>case2-1</div>
+    </div>
+    <div class="case2-2">
+        <div>case2-2</div>
+    </div>
 </body>
 
 </html>
